@@ -7,6 +7,7 @@ import { pathToFileURL } from "node:url"
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
 const GUILD_ID = process.env.GUILD_ID;
+const isDevMode = process.argv.includes("--daashdev");  // Checks the "argv" Array of the "process" Object if the custome flag was passed in the terminal.
 
 const commands = [];  // Array that will contain .toJSON() outputs of all the command's data.
 
@@ -35,15 +36,19 @@ for (const folder of commandFolders) {
 // Construct an instance of the REST module.
 const rest = new REST().setToken(BOT_TOKEN);
 
+const route = isDevMode ? Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID) : Routes.applicationCommands(CLIENT_ID);  // Changes the route based on if the script is running with "--daashdev" custom flag in the command-line.
+
+console.log(`Deploying Commands to ${isDevMode ? "AASH-X Development Playground" : "Global (All Servers)"}...`);
+
 // Deploying the Commands!
 (async () => {
     try {
-        console.log(`Started refreshing ${commands.length} application slash (/) commands.`);
+        console.log(`Started refreshing ${commands.length} application slash (/) commands...`);
 
         // The put request method is used to fully refresh/replace all commands in the Guild with the current set.
-        const data = await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
+        const data = await rest.put(route, { body: commands });
 
-        console.log(`Successfully reloaded ${data.length} application slash (/) commands.`);
+        console.log(`Successfully reloaded ${data.length} application slash (/) commands!`);
 
     } catch (error) {
         console.error(error);
