@@ -1,7 +1,8 @@
 import "dotenv/config"
-import {REST, Routes} from "discord.js"
+import { REST, Routes } from "discord.js"
 import fs from "node:fs"
 import path from "node:path"
+import { pathToFileURL } from "node:url"
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -19,9 +20,10 @@ for (const folder of commandFolders) {
 
     for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
-        const {default: command} = await import(filePath);
+        const fileURL = pathToFileURL(filePath).href;
+        const { default: command } = await import(fileURL);
 
-        if("data" in command && "execute" in command) {
+        if ("data" in command && "execute" in command) {
             commands.push(command.data.toJSON());   // Run .toJSON() method of SlashCommandBuilder Class on each of its instance called "data" in the "command" Object. And get the output for Deployment.
         }
         else {
@@ -39,7 +41,7 @@ const rest = new REST().setToken(BOT_TOKEN);
         console.log(`Started refreshing ${commands.length} application slash (/) commands.`);
 
         // The put request method is used to fully refresh/replace all commands in the Guild with the current set.
-        const data = await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {body: commands});
+        const data = await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
 
         console.log(`Successfully reloaded ${data.length} application slash (/) commands.`);
 

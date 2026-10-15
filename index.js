@@ -1,7 +1,7 @@
 import "dotenv/config"
 import fs from "node:fs"
 import path from "node:path"
-import {pathToFileURL} from "node:url"
+import { pathToFileURL } from "node:url"
 import { Client, Collection, Events, GatewayIntentBits, MessageFlags } from "discord.js"  // Importing necessary classes from the Library
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -52,7 +52,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
     try {
         await command.execute(interaction);  // After finding the command, call the command's .execute() Method with "interaction" Object passed as argument.
-    } catch (error){
+    } catch (error) {
         console.error(error);
         if (interaction.replied || interaction.deferred) {
             await interaction.followUp({
