@@ -36,6 +36,13 @@ for (const folder of commandFolders) {
     }
 }
 
+client.on(Events.InteractionCreate, (interaction) => {
+    if (!interaction.isChatInputCommand()) {
+        return;
+    }
+    console.log(interaction);
+});
+
 
 client.login(BOT_TOKEN);
 
