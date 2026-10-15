@@ -1,0 +1,16 @@
+{
+  "name": "discord_bot-nodejs",
+  "version": "1.0.0",
+  "description": "Discord Autonomous Assistant & Server Host — Machine Kernel 1 (DAASH-MK1) is a Discord Bot that is made for Personal and Server Use (Servers that are related to or Explicitly given permission by the Developer Aashirwad Singh) and can be accessed anywhere with permission.",
+  "license": "ISC",
+  "author": "Aashirwad Singh",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "dotenv": "^18.0.7"
+  }
+}
