@@ -1,6 +1,7 @@
 import "dotenv/config"
 import fs from "node:fs"
 import path from "node:path"
+import {pathToFileURL} from "node:url"
 import { Client, Collection, Events, GatewayIntentBits, MessageFlags } from "discord.js"  // Importing necessary classes from the Library
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -26,7 +27,8 @@ for (const folder of commandFolders) {
 
     for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
-        const { default: command } = await import(filePath);  // Dynamic Import, returns the whole Module Object containing all the named and the default Exports. The default export is the value of a property named "default" inside the Module Object.
+        const fileURL = pathToFileURL(filePath).href;  // Converting the path starting with drive letter "C:" into a proper "file://" URL
+        const { default: command } = await import(fileURL);  // Dynamic Import, returns the whole Module Object containing all the named and the default Exports. The default export is the value of a property named "default" inside the Module Object.
 
         if ("data" in command && "execute" in command) {  // Checks if "data" and "execute" exist in "command" Object. True even if falsy.
             client.commands.set(command.data.name, command);
