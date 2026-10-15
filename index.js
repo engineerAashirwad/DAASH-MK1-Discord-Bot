@@ -26,13 +26,13 @@ for (const folder of commandFolders) {
 
     for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
-        const { default: command } = await import(filePath);
+        const { default: command } = await import(filePath);  // Dynamic Import, returns the whole Module Object containing all the named and the default Exports. The default export is the value of a property named "default" inside the Module Object.
 
         if ("data" in command && "execute" in command) {  // Checks if "data" and "execute" exist in "command" Object. True even if falsy.
             client.commands.set(command.data.name, command);
         }
         else {
-            console.log(`[WARNING] the command at ${filePath} is missing a required "data" or "execute" property.`);
+            console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
         }
     }
 }
