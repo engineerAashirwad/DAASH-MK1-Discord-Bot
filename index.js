@@ -19,7 +19,7 @@ const foldersPath = path.join(import.meta.dirname, "commands"); // In ES Modules
 
 const commandFolders = fs.readdirSync(foldersPath);  // Returns an Array of all the Folders/Files in the path passed as the argument.
 
-
+// A Dynamic Command Handler that dynamically reads command files and sets them in the client.commands Collection.
 for (const folder of commandFolders) {
     const commandsPath = path.join(foldersPath, folder);  // Every current folder in the iterration gets a path of its location.
     const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith(".js"));
