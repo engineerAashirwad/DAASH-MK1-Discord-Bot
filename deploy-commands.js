@@ -22,7 +22,7 @@ for (const folder of commandFolders) {
         const {default: command} = await import(filePath);
 
         if("data" in command && "execute" in command) {
-            commands.push(command.data.toJSON());   // Run .toJSON() method of SlashCommandBuilder Class on each of its instance called "data" in the command definition Object.
+            commands.push(command.data.toJSON());   // Run .toJSON() method of SlashCommandBuilder Class on each of its instance called "data" in the "command" Object. And get the output for Deployment.
         }
         else {
             console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
