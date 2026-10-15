@@ -4,6 +4,6 @@ export default {
     data: new SlashCommandBuilder().setName("hello").setDescription("Greets the User."),
 
     async execute(interaction) {
-        await interaction.reply(`Hello ${interaction.user.username}. Hope your day is going good.`);
+        await interaction.reply(`Hello ${interaction.user.globalname}. Hope your day is going good.`);
     },
 };
