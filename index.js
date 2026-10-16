@@ -2,17 +2,12 @@ import "dotenv/config"
 import fs from "node:fs"
 import path from "node:path"
 import { pathToFileURL } from "node:url"
-import { Client, Collection, Events, GatewayIntentBits, MessageFlags } from "discord.js"  // Importing necessary classes from the Library
+import { Client, Collection, GatewayIntentBits } from "discord.js"  // Importing necessary classes from the Library
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 
 // Creating the Client Instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-// When Client is Logged in and Ready, run the below callback.
-client.once(Events.ClientReady, (readyClient) => {
-    console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
 
 client.commands = new Collection();
 
@@ -39,37 +34,26 @@ for (const folder of commandFolders) {
     }
 }
 
-client.on(Events.InteractionCreate, async (interaction) => {
-    if (!interaction.isChatInputCommand()) {    // Guard for Only handling Slash Commands.
-        return;
+// Dynamically retrieving all the event files from the events folder, similar to how I made the Command handler, I made this Event Handler.
+const eventsPath = path.join(import.meta.dirname, "events");
+const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith(".js"));
+
+for (const file of eventFiles) {
+    const filePath = path.join(eventsPath, file);
+    const fileURL = pathToFileURL(filePath).href;
+    const {default: event} = await import(fileURL);
+    // Loading each event listener individually and attaching .on() or .once() listener according to the event being handled.
+    if(event.once) {
+        client.once(event.eventName, (...args) => {
+            event.execute(...args);
+        });
     }
-
-    const command = interaction.client.commands.get(interaction.commandName); // Get the command name and check if it exists in the "commands" collection.
-    if (!command) {
-        console.error(`No Command matching ${interaction.commandName} was Found!`);
-        return;
+    else {
+        client.on(event.eventName, (...args) => {
+            event.execute(...args);
+        });
     }
-
-    try {
-        await command.execute(interaction);  // After finding the command, call the command's .execute() Method with "interaction" Object passed as argument.
-    } catch (error) {
-        console.error(error);
-        if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({
-                content: "There was an error while executing this command!",
-                flags: MessageFlags.Ephemeral,
-            });
-        }
-        else {
-            await interaction.reply({
-                content: "There was an error while executing this command!",
-                flags: MessageFlags.Ephemeral,
-            });
-        }
-    }
-
-});
-
+}
 
 client.login(BOT_TOKEN);
 
