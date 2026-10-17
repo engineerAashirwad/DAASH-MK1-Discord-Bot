@@ -10,6 +10,7 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
+client.cooldowns = new Collection();
 
 const foldersPath = path.join(import.meta.dirname, "commands"); // In ES Modules "__dirname" is not supported natively, instead import.meta.dirname is used and is natively supported.
 

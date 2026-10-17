@@ -1,4 +1,4 @@
-import { Events, MessageFlags } from "discord.js"
+import { Collection, Events, MessageFlags } from "discord.js"
 
 export default {
     eventName: Events.InteractionCreate,
@@ -12,6 +12,32 @@ export default {
             console.error(`No Command matching ${interaction.commandName} was Found!`);
             return;
         }
+
+        const {cooldowns} = interaction.client;
+
+        if(!cooldowns.has(command.data.name)) {
+            cooldowns.set(command.data.name, new Collection());
+        }
+
+        const now = Date.now();
+        const timestamps = cooldowns.get(command.data.name);
+        const defaultCooldownDuration = 2.5;
+        const cooldownTime = (command.cooldown ?? defaultCooldownDuration) * 1000;
+
+        if(timestamps.has(interaction.user.id)) {
+            const expirationTime = timestamps.get(interaction.user.id) + cooldownTime;
+
+            if(now < expirationTime) {
+                const expiredTimestamp = Math.round(expirationTime / 1000);
+                return interaction.reply({
+                    content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`,
+                    flags: MessageFlags.Ephemeral,
+                });
+            }
+        }
+
+        timestamps.set(interaction.user.id, now);
+        setTimeout(() => timestamps.delete(interaction.user.id), cooldownTime);
 
         try {
             await command.execute(interaction);  // After finding the command, call the command's .execute() Method with "interaction" Object passed as argument.
