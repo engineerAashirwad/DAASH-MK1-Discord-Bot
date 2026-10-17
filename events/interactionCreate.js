@@ -13,6 +13,7 @@ export default {
             return;
         }
 
+        // Implemented the Cooldown system for spam protection.
         const {cooldowns} = interaction.client;
 
         if(!cooldowns.has(command.data.name)) {
