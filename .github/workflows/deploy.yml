@@ -1,0 +1,17 @@
+name: Deploy Discord Bot to Ubuntu
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Pull latest code and restart bot
+        run: |
+          cd /home/aashirwad-singh/Desktop/DAASH-MK1-Discord-Bot
+          git pull origin main
+          npm install --omit=dev
+          pm2 restart discord-bot
