@@ -56,5 +56,8 @@ for (const file of eventFiles) {
     }
 }
 
-client.login(BOT_TOKEN);
+client.login(BOT_TOKEN).catch((err) => {
+    console.log(`Something went wrong while Logging in to Discord, exiting Process to initiate PM2 restart...`, err);
+    process.exit(1);
+});
 
