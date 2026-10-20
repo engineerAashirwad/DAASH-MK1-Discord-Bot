@@ -13,6 +13,6 @@ export default {
         const reason = interaction.options.getString("reason") ?? "No reason provided.";
 
         await interaction.reply(`Banning <@${target.id}> for reason: ${reason}`);
-        await interaction.guild.members.ban(target);
+        await interaction.guild.members.ban(target, {reason});
     },
 };
